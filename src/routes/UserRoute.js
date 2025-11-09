@@ -127,7 +127,7 @@ router.post('/login-user', async (req, res) => {
       const snapshot = await db.collection('users').where('email', '==', email).get();
       if (snapshot.empty) {
         return res.status(404).json({
-          code: '003',
+          code: 'LU003',
           message: 'Usuario no encontrado',
         });
       }
@@ -138,7 +138,7 @@ router.post('/login-user', async (req, res) => {
       const isValidPassword = await bcrypt.compare(password, userData.password);
       if (!isValidPassword) {
         return res.status(401).json({
-          code: '004',
+          code: 'LU004',
           message: 'Contraseña incorrecta',
         });
       }
@@ -161,7 +161,7 @@ router.post('/login-user', async (req, res) => {
       });
   
       res.status(200).json({
-        code: '001',
+        code: 'LU001',
         message: 'Login exitoso',
         data: {
           id: userDoc.id,
@@ -179,7 +179,7 @@ router.post('/login-user', async (req, res) => {
     } catch (error) {
       console.error('Error en login:', error);
       res.status(500).json({
-        code: '500',
+        code: 'LU002',
         message: 'Error interno en el login',
       });
     }
