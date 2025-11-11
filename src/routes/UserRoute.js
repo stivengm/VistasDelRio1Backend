@@ -6,9 +6,9 @@ const JWT_SECRET = process.env.JWT_SECRET_PASSWORD;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const router = Router();
+const routerUser = Router();
 
-router.get('/all-users', async (req, res) => {
+routerUser.get('/all-users', async (req, res) => {
     try {
         const querySnapshotRoles =  await db.collection('roles').get();
 
@@ -45,7 +45,7 @@ router.get('/all-users', async (req, res) => {
     }
 });
 
-router.get('/all-roles', async (req, res) => {
+routerUser.get('/all-roles', async (req, res) => {
     try {
         const querySnapshotRoles =  await db.collection('roles').get();
 
@@ -80,7 +80,7 @@ router.get('/all-roles', async (req, res) => {
     }
 });
 
-router.post('/register-user', async (req, res) => {
+routerUser.post('/register-user', async (req, res) => {
     try {
         const { torre, apartamento, fullName, email, password, phone, roleId } = req.body;
 
@@ -118,7 +118,7 @@ router.post('/register-user', async (req, res) => {
     }
 });
 
-router.post('/login-user', async (req, res) => {
+routerUser.post('/login-user', async (req, res) => {
     try {
       const { email, password } = req.body;
   
@@ -200,4 +200,4 @@ router.post('/login-user', async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = routerUser;
