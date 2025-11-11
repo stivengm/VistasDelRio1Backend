@@ -11,23 +11,25 @@ router.get('/all-users', async (req, res) => {
 
         const allRoles = {};
         querySnapshotRoles.forEach((doc) => {
-            const role = doc.data();
-            allRoles[role.roleId] = role.roleName;
+          const role = doc.data();
+          allRoles[role.roleId] = role.roleName;
         });
 
         const querySnapshot = await db.collection('users').get();
 
         const users = querySnapshot.docs.map((doc) => {
-            const data = doc.data();
-            console.log(data.roleId);
-            console.log(allRoles);
+          const data = doc.data();
+          console.log(data.roleId);
+          console.log(allRoles);
 
-            const roleName = allRoles[data.roleId] || 'Sin rol asignado';
-            return {
-              id: doc.id,
-              ...data,
-              role: roleName
-            };
+          const { password, ...restOfData } = data;
+
+          const roleName = allRoles[data.roleId] || 'Sin rol asignado';
+          return {
+            id: doc.id,
+            ...restOfData,
+            role: roleName
+          };
         });
   
         res.status(200).json({
