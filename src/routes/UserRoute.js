@@ -1,6 +1,9 @@
 const { Router } = require('express');
 const { db } = require('../firebase');
 
+const JWT_SECRET = process.env.JWT_SECRET_PASSWORD;
+
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const router = Router();
@@ -156,6 +159,15 @@ router.post('/login-user', async (req, res) => {
           roleName = roleSnapshot.docs[0].data().roleName;
         }
       }
+
+      const tokenPayload = {
+        userId: userDoc.id,
+        email: userData.email,
+        roleId: userData.roleId,
+        roleName: roleName,
+      };
+  
+      const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1h' });
   
       const userRef = db.collection('users').doc(userDoc.id);
       await userRef.update({
@@ -176,6 +188,7 @@ router.post('/login-user', async (req, res) => {
           roleName,
           createdAt: userData.createdAt,
           lastLogin: new Date(),
+          token
         },
       });
     } catch (error) {
