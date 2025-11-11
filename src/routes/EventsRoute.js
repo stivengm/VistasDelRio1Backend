@@ -36,35 +36,16 @@ eventsRoute.post('/add-event', async (req, res) => {
 
 eventsRoute.get('/get-events', async (req, res) => {
     try {
-        const querySnapshotRoles =  await db.collection('events').get();
-
-        const allRoles = {};
-        querySnapshotRoles.forEach((doc) => {
-          const role = doc.data();
-          allRoles[role.roleId] = role.roleName;
-        });
-
-        const querySnapshot = await db.collection('users').get();
-
-        const users = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          console.log(data.roleId);
-          console.log(allRoles);
-
-          const { password, ...restOfData } = data;
-
-          const roleName = allRoles[data.roleId] || 'Sin rol asignado';
-          return {
+        const querySnapshotEvents =  await db.collection('events').get();
+        const events = querySnapshotEvents.docs.map((doc) => ({
             id: doc.id,
-            ...restOfData,
-            role: roleName
-          };
-        });
-  
-        res.status(200).json({
+            ...doc.data(),
+        }));
+
+        return res.status(200).json({
             code: '001',
-            message: 'Resultado de todos los usuarios de la base de datos',
-            data: users
+            message: 'Resultado de todos los eventos',
+            data: events
         });
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener usuarios' });
